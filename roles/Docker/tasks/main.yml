@@ -1,0 +1,27 @@
+---
+- name: check docker
+  shell: "which docker"
+  register: docker_installed
+  failed_when: docker_installed.rc == 0
+
+- name: install docker dependencies
+  become: yes
+  apt:
+    name: "{{ docker_dependencies }}"
+    state: present
+  tags: install
+
+- name: add docker key
+  become: yes
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+  tags: install
+
+- name: install docker engine
+  become: yes
+  apt:
+    name: "{{ docker_packages }}"
+    state: present
+  tags: install
+
